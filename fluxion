@@ -3807,8 +3807,8 @@ function checkhandshake {
 function certssl {
 # Test if the ssl certificate is generated correcly if there is any
 
-		if [ -f /root/server.pem ]; then
-		if [ -s /root/server.pem ]; then
+		if [ -f /$DUMP_PATH/server.pem ]; then
+		if [ -s /$DUMP_PATH/server.pem ]; then
 
 		webinterface
 		break
@@ -3862,7 +3862,7 @@ function certssl {
 
 # Create Self-Signed SSL Certificate
 function creassl {
-	xterm -title "Create Self-Signed SSL Certificate" -e openssl req -subj '/CN=SEGURO/O=SEGURA/OU=SEGURA/C=US' -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout /root/server.pem -out /root/server.pem # more details there https://www.openssl.org/docs/manmaster/apps/openssl.html
+	xterm -title "Create Self-Signed SSL Certificate" -e openssl req -subj '/CN=SEGURO/O=SEGURA/OU=SEGURA/C=US' -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout /root/server.pem -out /$DUMP_PATH/server.pem # more details there https://www.openssl.org/docs/manmaster/apps/openssl.html
 	certssl
 }
 
@@ -3872,7 +3872,7 @@ function creassl {
 function webinterface {
 
 
-	chmod 400 /root/server.pem
+	chmod 400 /$DUMP_PATH/server.pem
 
 	while true; do
 		conditional_clear
